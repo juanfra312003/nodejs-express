@@ -1,0 +1,38 @@
+{
+  "name": "curso-node",
+  "version": "1.0.0",
+  "description": "Aprendiendo Node Express",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/juanfra312003/nodejs-express.git"
+  },
+  "keywords": [
+    "curso",
+    "node",
+    "nodejs",
+    "express",
+    "juanfra312003"
+  ],
+  "author": "Juan Francisco Ramírez Escobar ft. midudev",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/juanfra312003/nodejs-express/issues"
+  },
+  "homepage": "https://github.com/juanfra312003/nodejs-express#readme",
+  "dependencies": {
+    "picocolors": "1.0.0"
+  },
+  "devDependencies": {
+    "standard": "17.1.0"
+  },
+  "eslintConfig": {
+    "extends": "standard",
+    "rules": {
+      "indent": "off"
+    }
+  }
+}
