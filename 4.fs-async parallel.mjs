@@ -8,3 +8,11 @@ Promise.all([
     console.log('Primer texto', text)
     console.log('Segundo texto', secondText)
 })
+
+
+// Verificacion de la ejecucion en paralelo
+console.log("Acciones mientrsa tanto...")
+console.log("Acciones mientrsa tanto...")
+console.log("Acciones mientrsa tanto...")
+console.log("Acciones mientrsa tanto...")
+
