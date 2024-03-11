@@ -11,7 +11,7 @@ const processRequest = (req, res) => {
         res.end('<h1> Bienvenido a mi página de inicio. jojo </h1>')
     } else if (req.url === '/imagen-super-bonita.png') {
         // Se espera una imágen cómo respuesta
-        fs.readFile('./imagen_jc.png', (err, data) => {
+        fs.readFile('./imageDV.png', (err, data) => {
             if (err) {
                 res.statusCode = 500
                 res.end('<h1> 500: Error interno del servidor </h1>')
