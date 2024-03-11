@@ -4,12 +4,14 @@
   "description": "",
   "main": "1.http.js",
   "scripts": {
+    "dev": "nodemon 1.http.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "nodemon": "^3.1.0",
     "standard": "^17.1.0"
   },
   "eslintConfig": {
@@ -17,5 +19,9 @@
     "rules": {
       "indent": "off"
     }
+  },
+  "dependencies": {
+    "eslint": "^8.57.0",
+    "g": "^2.0.1"
   }
 }
