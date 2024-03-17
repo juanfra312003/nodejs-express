@@ -2,7 +2,8 @@ const express = require('express')
 const movies = require('./movies.json')
 const crypto = require('node:crypto')
 const z = require('zod')
-const { validateMovie } = require('./scheme/movies')
+const { validateMovie } = require('./schemas/movies')
+const { validatePartialMovie } = require('./schemas/movies')
 
 
 const app = express()
@@ -30,9 +31,10 @@ app.post('/movies', (req, res) => {
 
     const result = validateMovie(req.body)
 
+    // Toma valores de error o success
     if (result.error) {
         return res.status(400).json({
-            error: result.error.message
+            error: JSON.parse(result.error.message)
         })
     }
 
@@ -58,9 +60,37 @@ app.get('/movies/:id', (req, res) => {
 })
 
 
+app.patch('/movies/:id', (req, res) => {
+    const result = validatePartialMovie(req.body)
+
+    if (result.error) {
+        return res.status(400).json({
+            error: JSON.parse(result.error.message)
+        })
+    }
+
+    const { id } = req.params
+    const movieIndex = movies.findIndex(movie => movie.id === id)
+
+    // Obtener directamente el índice
+    if (movieIndex === -1) {
+        return res.status(404).json({ message: 'Movie not found' })
+    }
+
+    const updateMovie = {
+        ...movies[movieIndex],
+        ...result.data
+    }
+
+    movies[movieIndex] = updateMovie
+    return res.json(updateMovie)
+
+
+})
+
 
 const PORT = process.env.PORT ?? 1234
-const HOST = process.env.HOST ?? "127.0.0.1"
+const HOST = process.env.HOST ?? "localhost"
 
 app.listen(PORT, HOST, () => {
     console.log(`Server running at http://${HOST}:${PORT}/`)
