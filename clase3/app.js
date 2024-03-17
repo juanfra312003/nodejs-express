@@ -1,9 +1,11 @@
 const express = require('express')
 const movies = require('./movies.json')
+const crypto = require('node:crypto')
 
 
 const app = express()
 
+app.use(express.json()) // Middleware para parsear el body de las peticiones a JSON
 app.disable('x-powered-by') // Deshabilitar el header 'x-powered-by'
 
 
@@ -21,6 +23,35 @@ app.get('/movies', (req, res) => {
 
     res.json(movies)
 })
+
+app.post('/movies', (req, res) => {
+    const {
+        title,
+        director,
+        year,
+        duration,
+        genre,
+        rate,
+        poster,
+    } = req.body
+
+    const newMovie = {
+        id: crypto.randomUUID(), //uuidv4()
+        title,
+        genre,
+        director,
+        year,
+        duration,
+        rate: rate ?? 0,
+        poster
+    }
+
+    movies.push(newMovie)
+
+    // Código de estado de creación de recursos (201)
+    res.status(201).json(newMovie)
+}
+)
 
 app.get('/movies/:id', (req, res) => {
     const { id } = req.params
