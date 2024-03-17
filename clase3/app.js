@@ -15,7 +15,18 @@ app.get('/movies', (req, res) => {
     res.json(movies)
 })
 
+app.get('/movies/:id', (req, res) => {
+    const { id } = req.params
+    const movie = movies.find(movie => movie.id === id)
+    if (movie) return res.json(movie)
 
-app.listen(PORT, () => {
-    console.log(`Server running at http://localhost:${PORT}/`)
+    // Si no se encuentra la película
+    res.status(404).json({ message: 'Movie not found' })
+})
+
+const PORT = process.env.PORT ?? 1234
+const HOST = process.env.HOST ?? "127.0.0.1"
+
+app.listen(PORT, HOST, () => {
+    console.log(`Server running at http://${HOST}:${PORT}/`)
 })
