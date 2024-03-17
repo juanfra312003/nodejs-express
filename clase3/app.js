@@ -1,6 +1,8 @@
 const express = require('express')
 const movies = require('./movies.json')
 const crypto = require('node:crypto')
+const z = require('zod')
+const { validateMovie } = require('./scheme/movies')
 
 
 const app = express()
@@ -25,25 +27,18 @@ app.get('/movies', (req, res) => {
 })
 
 app.post('/movies', (req, res) => {
-    const {
-        title,
-        director,
-        year,
-        duration,
-        genre,
-        rate,
-        poster,
-    } = req.body
+
+    const result = validateMovie(req.body)
+
+    if (result.error) {
+        return res.status(400).json({
+            error: result.error.message
+        })
+    }
 
     const newMovie = {
         id: crypto.randomUUID(), //uuidv4()
-        title,
-        genre,
-        director,
-        year,
-        duration,
-        rate: rate ?? 0,
-        poster
+        ...result.data
     }
 
     movies.push(newMovie)

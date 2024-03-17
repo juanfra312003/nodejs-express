@@ -12,10 +12,10 @@ POST http://localhost:1234/movies
 Content-Type: application/json
 
 {
-    "title": "Harry Potter and the half-blood prince",
+    "title": "Harry Potter and the Half-Blood Prince",
     "year": 2009,
     "director": "Chris Columbus",
-    "duration" : 153,
+    "duration" : 150,
     "poster" : "https://www.imdb.com/title/tt0417741/mediaviewer/rm702707200/?ref_=tt_ov_i",
     "genre": [
         "Action",
