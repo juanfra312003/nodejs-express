@@ -11,7 +11,22 @@ const { validatePartialMovie } = require('./schemas/movies')
 const app = express()
 
 app.use(express.json()) // Middleware para parsear el body de las peticiones a JSON
-app.use(cors())
+app.use(cors({
+    origin: (origin, callback) => {
+        const ACCEPTED_ORIGINS = [
+            'http://localhost:8080',
+            "http://localhost:1234"
+        ]
+
+
+        if (ACCEPTED_ORIGINS.includes(origin) || !origin) {
+            callback(null, true)
+        } else {
+            callback(new Error('Not allowed by CORS'))
+        }
+
+    }
+}))
 app.disable('x-powered-by') // Deshabilitar el header 'x-powered-by'
 
 // SOLUCIÓN ALTERNATIVA CORSE
