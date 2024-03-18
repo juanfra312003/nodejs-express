@@ -1,19 +1,39 @@
 const express = require('express')
 const movies = require('./movies.json')
 const crypto = require('node:crypto')
+const cors = require('cors')
 const z = require('zod')
 const { validateMovie } = require('./schemas/movies')
 const { validatePartialMovie } = require('./schemas/movies')
 
 
+
 const app = express()
 
 app.use(express.json()) // Middleware para parsear el body de las peticiones a JSON
+app.use(cors())
 app.disable('x-powered-by') // Deshabilitar el header 'x-powered-by'
 
+// SOLUCIÓN ALTERNATIVA CORSE
+/*
+const ACCEPTED_ORIGINS = [
+    'http://localhost:8080',
+    "http://localhost:1234"
+]
+*/
 
 // Todos los recursos que sean MOVIES se identifican con /movies
 app.get('/movies', (req, res) => {
+    /*
+    const origin = req.header('origin')
+
+    // El !origin establece cuando no hay origen (La petición la hace el mismo servidor)
+    if (ACCEPTED_ORIGINS.includes(origin) || !origin) {
+        res.header('Access-Control-Allow-Origin', origin)
+    }
+    */
+
+
     const { genre } = req.query
     if (genre) {
         // El genero es un array, por consiguiente se debe mirar si se encuentra dentro
@@ -59,6 +79,29 @@ app.get('/movies/:id', (req, res) => {
     res.status(404).json({ message: 'Movie not found' })
 })
 
+/*
+app.options('movies', (req, res) => {
+    const origin = req.header('origin')
+
+    if (ACCEPTED_ORIGINS.includes(origin) || !origin) {
+        res.header('Access-Control-Allow-Origin', origin)
+        res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE')
+    }
+    res.send(200)
+})
+*/
+
+app.delete('/movies/:id', (req, res) => {
+    const { id } = req.params;
+    const movieIndex = movies.findIndex(movie => movie.id === id);
+
+    if (movieIndex === -1) {
+        return res.status(404).json({ message: 'Movie not found' });
+    }
+
+    movies.splice(movieIndex, 1);
+    return res.status(204).send();
+});
 
 app.patch('/movies/:id', (req, res) => {
     const result = validatePartialMovie(req.body)
@@ -84,9 +127,8 @@ app.patch('/movies/:id', (req, res) => {
 
     movies[movieIndex] = updateMovie
     return res.json(updateMovie)
-
-
 })
+
 
 
 const PORT = process.env.PORT ?? 1234
