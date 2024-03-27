@@ -7,13 +7,14 @@ COMO LEER UN JSON en ESModules
 import fs from 'node:fs'
 const movies = JSON.parse(fs.readFileSync('./movies.json', 'utf-8'))
 */
-import { createRequire } from 'node:module'
-const require = createRequire(import.meta.url) // <- Tiene la dirección del archivo actual
-const movies = require('./movies.json')
+import { readJSON } from './utils.js'
+const movies = readJSON('./movies.json')
+
 
 const app = express()
 
 app.use(json()) // Middleware para parsear el body de las peticiones a JSON
+
 app.use(cors({
     origin: (origin, callback) => {
         const ACCEPTED_ORIGINS = [
