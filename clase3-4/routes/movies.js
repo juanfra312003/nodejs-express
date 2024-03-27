@@ -1,12 +1,11 @@
 // Rutas de películas
-import { moviesRouter } from 'express'
-import { readJSON } from './utils'
-import { randomUUID } from 'crypto'
-import { validateMovie } from './schemas/movies'
-import { validatePartialMovie } from '../schemas/movies'
+import { Router } from 'express'
+import { readJSON } from '../utils.js'
+import { randomUUID } from 'node:crypto'
+import { validateMovie, validatePartialMovie } from '../schemas/movies.js'
 const movies = readJSON('./movies.json')
 
-export const moviesRouter = moviesRouter()
+export const moviesRouter = Router()
 
 moviesRouter.get('/', (req, res) => {
     const { genre } = req.query
