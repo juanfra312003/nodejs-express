@@ -7,7 +7,6 @@ const { validateMovie } = require('./schemas/movies')
 const { validatePartialMovie } = require('./schemas/movies')
 
 
-
 const app = express()
 
 app.use(express.json()) // Middleware para parsear el body de las peticiones a JSON
@@ -147,7 +146,7 @@ app.patch('/movies/:id', (req, res) => {
 
 
 const PORT = process.env.PORT ?? 1234
-const HOST = process.env.HOST ?? "localhost"
+const HOST = process.env.HOST ?? "127.0.0.1"
 
 app.listen(PORT, HOST, () => {
     console.log(`Server running at http://${HOST}:${PORT}/`)
