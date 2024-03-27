@@ -1,7 +1,6 @@
 import express, { json } from 'express'
-import { randomUUID } from 'node:crypto'
 import cors from 'cors'
-import { validateMovie, validatePartialMovie } from './schemas/movies.js'
+import { moviesRouter } from './routes/movies.js'
 /*
 COMO LEER UN JSON en ESModules
 import fs from 'node:fs'
