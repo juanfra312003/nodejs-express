@@ -1,27 +1,11 @@
 import express, { json } from 'express'
-import cors from 'cors'
 import { moviesRouter } from './routes/movies.js'
+import { corsMiddleware } from './middlewares/cors.js'
 
 const app = express()
 
 app.use(json()) // Middleware para parsear el body de las peticiones a JSON
-
-app.use(cors({
-    origin: (origin, callback) => {
-        const ACCEPTED_ORIGINS = [
-            'http://localhost:8080',
-            "http://localhost:1234"
-        ]
-
-
-        if (ACCEPTED_ORIGINS.includes(origin) || !origin) {
-            callback(null, true)
-        } else {
-            callback(new Error('Not allowed by CORS'))
-        }
-
-    }
-}))
+app.use(corsMiddleware()) // Middleware para manejar CORS
 
 app.disable('x-powered-by') // Deshabilitar el header 'x-powered-by'
 
