@@ -1,20 +1,23 @@
 import express, { json } from 'express'
-import { moviesRouter } from './routes/movies.js'
 import { corsMiddleware } from './middlewares/cors.js'
+import { createMovieRouter } from './routes/movies.js'
 
-const app = express()
 
-app.use(json()) // Middleware para parsear el body de las peticiones a JSON
-app.use(corsMiddleware()) // Middleware para manejar CORS
+export const createApp = ({ movieModel }) => {
+    const app = express()
 
-app.disable('x-powered-by') // Deshabilitar el header 'x-powered-by'
+    app.use(json())
+    app.use(corsMiddleware())
 
-// Cuando se accede a los recursos de /movies, uso el router moviesRouter
-app.use('/movies', moviesRouter)
+    app.disable('x-powered-by')
 
-const PORT = process.env.PORT ?? 1234
-const HOST = process.env.HOST ?? "127.0.0.1"
+    // Desde el punto de entrada se le pasa el modelo a usar
+    app.use('/movies', createMovieRouter({ movieModel: movieModel }))
 
-app.listen(PORT, HOST, () => {
-    console.log(`Server running at http://localhost:${PORT}/`)
-})
+    const PORT = process.env.PORT ?? 1234
+    const HOST = process.env.HOST ?? "127.0.0.1"
+
+    app.listen(PORT, HOST, () => {
+        console.log(`Server running at http://localhost:${PORT}/`)
+    })
+}
