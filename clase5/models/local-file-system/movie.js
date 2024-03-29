@@ -12,7 +12,7 @@ export class MovieModel {
         return movies
     }
 
-    static async getById({ id }) {
+    static getById = async ({ id }) => {
         const movie = movies.find(movie => movie.id === id)
         return movie
     }
