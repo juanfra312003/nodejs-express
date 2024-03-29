@@ -59,8 +59,47 @@ export class MovieModel {
     }
 
     static async create({ input }) {
+        const {
+            title,
+            year,
+            director,
+            duration,
+            poster,
+            rate,
+            genre
+        } = input;
 
+        const [uuidResult] = await connection.query('SELECT UUID() uuid;');
+        const [{ uuid }] = uuidResult;
+
+        try {
+            await connection.query(
+                'INSERT INTO movie (id, tittle, year, director, duration, poster, rate) VALUES (UUID_TO_BIN(?), ?, ?, ?, ?, ?, ?);',
+                [uuid, title, year, director, duration, poster, rate]
+            );
+
+            // Insertar los géneros si no existen
+            await Promise.all(genre.map(async genre => {
+                const [genreResult] = await connection.query('SELECT id FROM genre WHERE name = ?;', [genre]);
+                if (genreResult.length === 0) {
+                    await connection.query('INSERT INTO genre (name) VALUES (?);', [genre]);
+                }
+            }));
+
+            // Insertar las relaciones entre las películas y los géneros
+            await Promise.all(genre.map(async genre => {
+                const [genreResult] = await connection.query('SELECT id FROM genre WHERE name = ?;', [genre]);
+                const [{ id }] = genreResult;
+                await connection.query('INSERT INTO movie_genres (movie_id, genre_id) VALUES (UUID_TO_BIN(?), ?);', [uuid, id]);
+            }));
+
+            return { id: uuid, ...input };
+        } catch (error) {
+            console.error('Error creating movie:', error);
+            throw new Error('Error creating movie');
+        }
     }
+
 
     static async delete({ id }) {
 
