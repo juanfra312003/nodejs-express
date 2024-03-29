@@ -12,22 +12,25 @@ POST http://localhost:1234/movies
 Content-Type: application/json
 
 {
-    "title": "Harry Potter and the Half-Blood Prince",
-    "year": 2009,
-    "director": "Chris Columbus",
+    "title": "Cristiano Ronaldo es el papá de Leonel Pepsi",
+    "year": 2011,
+    "director": "Real Madrid FC el mejor club del mundo",
     "duration" : 150,
-    "poster" : "https://www.imdb.com/title/tt0417741/mediaviewer/rm702707200/?ref_=tt_ov_i",
+    "poster" : "https://e.rpp-noticias.io/xlarge/2020/04/20/052305_930042.jpg",
     "genre": [
-        "Action",
-        "Fantasy"
+        "Action"
     ]
 }
 
 
 ### Actualizar los datos de una pelicula existente
-PATCH http://localhost:1234/movies/e6cbcc58-ed7c-11ee-8511-244bfe4bdcb1
+PATCH http://localhost:1234/movies/6a360a18-c645-4b47-9a7b-2a71babbf3e0
 Content-Type: application/json
 
 {
-    "year" : 2008
+    "year" : 2008,
+    "director":"Dubull Mappet"
 }
+
+### Eliminar una película
+DELETE http://localhost:1234/movies/178cbd72-ed7d-11ee-8511-244bfe4bdcb1
