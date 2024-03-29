@@ -36,14 +36,14 @@ export class MovieModel {
                 'SELECT tittle, year, director, duration, poster, rate, BIN_TO_UUID(id) FROM movie JOIN movie_genres ON movie.id = movie_genres.movie_id WHERE movie_genres.genre_id = ?;', [id]
             )
 
-            console.log(movies)
+            return movies
         }
 
 
         const [movies] = await connection.query(
             'SELECT tittle, year, director, duration, poster, rate, BIN_TO_UUID(id) FROM MOVIE;'
         )
-        console.log(movies)
+        return movies
     }
 
     static async getById({ id }) {
