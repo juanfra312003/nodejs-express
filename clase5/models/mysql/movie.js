@@ -102,10 +102,25 @@ export class MovieModel {
 
 
     static async delete({ id }) {
-
+        try {
+            await connection.query('DELETE FROM movie WHERE id = UUID_TO_BIN(?);', [id]);
+            return true;
+        } catch (error) {
+            console.error('Error deleting movie:', error);
+            return false;
+        }
     }
 
     static async update({ id, input }) {
+        const [movies] = await connection.query('SELECT tittle, year, director, duration, poster, rate, BIN_TO_UUID(id) id FROM movie WHERE BIN_TO_UUID(id) = ?;', id);
 
+        const updatedMovie = {
+            ...movies[0],
+            ...input
+        };
+
+        const { tittle, year, director, duration, poster, rate } = updatedMovie;
+        await connection.query('UPDATE movie SET tittle = ?, year = ?, director = ?, duration = ?, poster = ?, rate = ? WHERE BIN_TO_UUID(id) = ?;', [tittle, year, director, duration, poster, rate, id]);
+        return updatedMovie;
     }
 }
