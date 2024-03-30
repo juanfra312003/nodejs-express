@@ -9,13 +9,12 @@ import { createClient } from '@libsql/client'
 dotenv.config()
 
 const PORT = process.env.PORT || 3000
-const HOST = process.env.HOST || '127.0.0.1'
 
 const app = express()
 const server = createServer(app)
 const io = new Server(server, {
     connectionStateRecovery: {
-        maxDisconnectionDuration: {}
+
     }
 })
 
@@ -24,47 +23,44 @@ const db = createClient({
     authToken: process.env.DB_TOKEN
 })
 
-await db.execute('CREATE TABLE IF NOT EXISTS messages (id INTEGER PRIMARY KEY AUTOINCREMENT, content TEXT)')
+await db.execute('CREATE TABLE IF NOT EXISTS messages (id INTEGER PRIMARY KEY AUTOINCREMENT, content TEXT, user TEXT)');
 
 io.on('connection', async (socket) => {
-    console.log('New connection')
+    console.log('a user has connected!')
 
     socket.on('disconnect', () => {
-        console.log('User disconnected')
+        console.log('an user has disconnected')
     })
 
     socket.on('chat message', async (msg) => {
         let result
+        const username = socket.handshake.auth.username ?? 'anonymous'
+        console.log({ username })
         try {
             result = await db.execute({
-                sql: 'INSERT INTO messages (content) VALUES (:msg)',
-                args: { msg }
+                sql: 'INSERT INTO messages (content, user) VALUES (:msg, :username)',
+                args: { msg, username }
             })
         } catch (e) {
             console.error(e)
             return
         }
 
-        // Emitir (Broadcast)
-        io.emit('chat message', msg, result.lastInsertRowid.toString())
+        io.emit('chat message', msg, result.lastInsertRowid.toString(), username)
     })
 
-
-    // Recuperar los mensajes sin conexión
-    if (!socket.recovered) {
+    if (!socket.recovered) { // <- recuperase los mensajes sin conexión
         try {
             const results = await db.execute({
-                sql: 'SELECT id, content FROM messages WHERE id > ?',
-                args: [socket.handshake.auth.serverOffset || 0]
+                sql: 'SELECT id, content, user FROM messages WHERE id > ?',
+                args: [socket.handshake.auth.serverOffset ?? 0]
             })
 
-            // Emitir cada línea a nivel
             results.rows.forEach(row => {
-                socket.emit('chat message', row.content, row.id.toString())
+                socket.emit('chat message', row.content, row.id.toString(), row.user)
             })
         } catch (e) {
             console.error(e)
-            return
         }
     }
 })
@@ -72,9 +68,9 @@ io.on('connection', async (socket) => {
 app.use(logger('dev'))
 
 app.get('/', (req, res) => {
-    res.sendFile(process.cwd() + path.sep + 'client' + path.sep + 'index.html')
+    res.sendFile(process.cwd() + '/client/index.html')
 })
 
-server.listen(PORT, HOST, () => {
-    console.log(`Server listening on http://localhost:${PORT}`)
+server.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`)
 })
